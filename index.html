@@ -2,7 +2,7 @@
 <html lang="hr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Josip Stjepić &amp; Gabrijel Relković — Predstavljanje poslodavcu</title>
   <meta name="author" content="Josip Stjepić &amp; Gabrijel Relković" />
   <meta name="description" content="Studenti FERIT-a Osijek, kolegij Multimedijska tehnika. Životopis, vještine, projekti i kontakt — predstavljamo se potencijalnim poslodavcima." />
@@ -12,14 +12,107 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" />
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Dodatni stilovi za hamburger meni – ubaceno ovdje da bude sigurno */
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+      z-index: 100;
+    }
+    .hamburger-box {
+      width: 30px;
+      height: 24px;
+      display: inline-block;
+      position: relative;
+    }
+    .hamburger-inner,
+    .hamburger-inner::before,
+    .hamburger-inner::after {
+      width: 30px;
+      height: 2px;
+      background-color: var(--ink, #1a1a2e);
+      position: absolute;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .hamburger-inner {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .hamburger-inner::before {
+      content: '';
+      top: -10px;
+    }
+    .hamburger-inner::after {
+      content: '';
+      bottom: -10px;
+    }
+    .hamburger[aria-expanded="true"] .hamburger-inner {
+      transform: translateY(-50%) rotate(45deg);
+    }
+    .hamburger[aria-expanded="true"] .hamburger-inner::before {
+      opacity: 0;
+    }
+    .hamburger[aria-expanded="true"] .hamburger-inner::after {
+      transform: translateY(10px) rotate(-90deg);
+    }
+    @media (max-width: 767px) {
+      .hamburger {
+        display: inline-block;
+      }
+      .main-nav {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: var(--background, #fffef7);
+        backdrop-filter: blur(12px);
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem 1rem;
+        gap: 1.5rem;
+        border-bottom: 1px solid var(--border, #e2e2e2);
+        transform: translateY(-120%);
+        transition: transform 0.3s ease-in-out;
+        z-index: 99;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      }
+      .main-nav.open {
+        transform: translateY(0);
+      }
+      .main-nav a {
+        font-size: 1.2rem;
+        padding: 0.5rem 0;
+      }
+    }
+    @media (min-width: 768px) {
+      .main-nav {
+        display: flex !important;
+        position: static;
+        transform: none;
+        flex-direction: row;
+        background: transparent;
+        padding: 0;
+        box-shadow: none;
+      }
+    }
+    /* Ostali tvoji stilovi neka ostanu u styles.css – ovdje samo hamburger */
+  </style>
   <script defer src="script.js"></script>
-
 </head>
 <body>
 <div class="page">
   <header class="site-header">
     <div class="container header-inner">
       <a href="#top" class="logo">J<span class="gold-dot">·</span>G — Portfolio</a>
+      <!-- Hamburger gumb -->
+      <button class="hamburger" aria-label="Izbornik" aria-expanded="false">
+        <span class="hamburger-box">
+          <span class="hamburger-inner"></span>
+        </span>
+      </button>
       <nav class="main-nav">
         <a href="#josip">Josip</a>
         <a href="#gabriel">Gabrijel</a>
@@ -144,7 +237,6 @@
               </div>
             </div>
           </div>
-          <!-- Kontakt sekcija za Josipa -->
           <div class="profile-block">
             <div class="block-header"><span class="block-icon">📧</span><h3>Kontakt</h3></div>
             <div class="contact-links">
@@ -242,7 +334,6 @@
               </div>
             </div>
           </div>
-          <!-- Kontakt sekcija za Gabriela -->
           <div class="profile-block">
             <div class="block-header"><span class="block-icon">📧</span><h3>Kontakt</h3></div>
             <div class="contact-links">
@@ -323,5 +414,112 @@
     </footer>
   </main>
 </div>
+
+<script>
+  // Sav JS za kompresiju slika i hamburger (uključujući lightbox)
+  (function() {
+    function openLightbox(src, alt) {
+      const overlay = document.createElement('div');
+      overlay.className = 'lb-overlay';
+      overlay.innerHTML = `
+        <button class="lb-close" aria-label="Zatvori">×</button>
+        <img src="${src}" alt="${alt || ''}">
+      `;
+      const close = () => {
+        overlay.remove();
+        document.body.style.overflow = '';
+        document.removeEventListener('keydown', onKey);
+      };
+      const onKey = (e) => { if (e.key === 'Escape') close(); };
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay || e.target.classList.contains('lb-close')) close();
+      });
+      document.addEventListener('keydown', onKey);
+      document.body.style.overflow = 'hidden';
+      document.body.appendChild(overlay);
+    }
+
+    function compressImage(imageSrc, callback) {
+      if (imageSrc.toLowerCase().includes('.svg') || imageSrc.startsWith('data:image/svg+xml')) {
+        callback(imageSrc);
+        return;
+      }
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const width = Math.ceil(img.width * 0.15);
+        const height = Math.ceil(img.height * 0.15);
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        try {
+          const compressedSrc = canvas.toDataURL('image/jpeg', 0.2);
+          callback(compressedSrc);
+        } catch(e) { callback(imageSrc); }
+      };
+      img.onerror = () => callback(imageSrc);
+      img.src = imageSrc;
+    }
+
+    function processImage(imgEl) {
+      if (!imgEl || imgEl.dataset.processed === 'true') return;
+      const orig = imgEl.src;
+      if (!orig) return;
+      imgEl.dataset.fullres = orig;
+      compressImage(orig, (compressed) => {
+        if (compressed !== orig) imgEl.src = compressed;
+        imgEl.dataset.processed = 'true';
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Kompresija i lightbox za sve slike
+      document.querySelectorAll('.img-card img').forEach(img => {
+        processImage(img);
+        const card = img.closest('.img-card');
+        if (card) {
+          card.style.cursor = 'zoom-in';
+          card.addEventListener('click', (e) => {
+            e.preventDefault();
+            openLightbox(img.dataset.fullres || img.src, img.alt);
+          });
+        }
+      });
+      document.querySelectorAll('button[aria-label^="Povećaj"] img').forEach(img => {
+        processImage(img);
+        const btn = img.closest('button');
+        if (btn) {
+          btn.style.cursor = 'zoom-in';
+          btn.addEventListener('click', () => openLightbox(img.dataset.fullres || img.src, img.alt));
+        }
+      });
+      document.querySelectorAll('.gallery-btn img').forEach(img => {
+        processImage(img);
+        const btn = img.closest('.gallery-btn');
+        if (btn) {
+          btn.addEventListener('click', () => openLightbox(img.dataset.fullres || img.src, img.alt));
+        }
+      });
+
+      // Hamburger meni
+      const hamburger = document.querySelector('.hamburger');
+      const navMenu = document.querySelector('.main-nav');
+      if (hamburger && navMenu) {
+        hamburger.addEventListener('click', () => {
+          const expanded = hamburger.getAttribute('aria-expanded') === 'true' ? false : true;
+          hamburger.setAttribute('aria-expanded', expanded);
+          navMenu.classList.toggle('open');
+        });
+        navMenu.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => {
+            navMenu.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', 'false');
+          });
+        });
+      }
+    });
+  })();
+</script>
 </body>
 </html>
