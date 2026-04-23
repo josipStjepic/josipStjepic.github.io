@@ -20,7 +20,7 @@
     document.body.appendChild(overlay);
   }
 
-  // EKSTREMNA kompresija: 10% dimenzija, 10% kvalitete
+  // Kompresija – prilagođeni parametri
   function compressExtreme(imageSrc, callback) {
     if (imageSrc.toLowerCase().includes('.svg') || imageSrc.startsWith('data:image/svg+xml')) {
       callback(imageSrc);
@@ -28,17 +28,18 @@
     }
 
     const img = new Image();
-    // OVDJE IZBRISAN crossOrigin kako bi radilo za lokalne datoteke
     img.onload = function() {
       const canvas = document.createElement('canvas');
-      const width = Math.ceil(img.width * 0.1);  // 10% originalne širine
-      const height = Math.ceil(img.height * 0.1); // 10% originalne visine
+      // PROMIJENI OVDJE: 0.3 = 30% originalne veličine (prije 0.1)
+      const width = Math.ceil(img.width * 0.3);
+      const height = Math.ceil(img.height * 0.3);
       canvas.width = width;
       canvas.height = height;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, width, height);
       try {
-        const compressedSrc = canvas.toDataURL('image/jpeg', 0.1); // 10% kvalitete
+        // PROMIJENI OVDJE: 0.4 = 40% kvalitete (prije 0.1)
+        const compressedSrc = canvas.toDataURL('image/jpeg', 0.4);
         console.log(`Komprimirana slika: ${imageSrc.substring(0, 50)} -> ${width}x${height}`);
         callback(compressedSrc);
       } catch (e) {
@@ -68,7 +69,6 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    // 1. Hero slike (studenti)
     const heroImages = document.querySelectorAll('.img-card img');
     console.log('Pronađeno hero slika:', heroImages.length);
     heroImages.forEach((img) => {
@@ -84,7 +84,6 @@
       }
     });
 
-    // 2. Profilne slike (pored audio)
     const profileImages = document.querySelectorAll('button[aria-label^="Povećaj"] img');
     console.log('Pronađeno profilnih slika:', profileImages.length);
     profileImages.forEach((img) => {
@@ -99,7 +98,6 @@
       }
     });
 
-    // 3. Galerijske slike
     const galleryImages = document.querySelectorAll('.gallery-btn img');
     console.log('Pronađeno galerijskih slika:', galleryImages.length);
     galleryImages.forEach((img) => {
