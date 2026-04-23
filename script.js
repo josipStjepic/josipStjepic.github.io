@@ -30,14 +30,14 @@
     const img = new Image();
     img.onload = function() {
       const canvas = document.createElement('canvas');
-      const width = Math.ceil(img.width * 0.15);  // 15% originalne širine
-      const height = Math.ceil(img.height * 0.15); // 15% originalne visine
+      const width = Math.ceil(img.width * 0.15);
+      const height = Math.ceil(img.height * 0.15);
       canvas.width = width;
       canvas.height = height;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, width, height);
       try {
-        const compressedSrc = canvas.toDataURL('image/jpeg', 0.2); // 20% kvalitete
+        const compressedSrc = canvas.toDataURL('image/jpeg', 0.2);
         console.log(`Komprimirana slika: ${imageSrc.substring(0, 50)} -> ${width}x${height}`);
         callback(compressedSrc);
       } catch (e) {
@@ -67,6 +67,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
+    // *** SLIKE ***
     const heroImages = document.querySelectorAll('.img-card img');
     console.log('Pronađeno hero slika:', heroImages.length);
     heroImages.forEach((img) => {
@@ -108,5 +109,25 @@
         });
       }
     });
+
+    // *** HAMBURGER MENI (dodano) ***
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.main-nav');
+
+    if (hamburger && navMenu) {
+      hamburger.addEventListener('click', () => {
+        const expanded = hamburger.getAttribute('aria-expanded') === 'true' ? false : true;
+        hamburger.setAttribute('aria-expanded', expanded);
+        navMenu.classList.toggle('open');
+      });
+
+      // Zatvori meni kada se klikne na link
+      navMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          navMenu.classList.remove('open');
+          hamburger.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
   });
 })();
