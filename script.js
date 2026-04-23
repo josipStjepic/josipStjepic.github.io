@@ -20,52 +20,59 @@
     document.body.appendChild(overlay);
   }
 
-  function reduceImageResolution(imageSrc, callback, quality = 0.6) {
+  // EKSTREMNA kompresija: 10% dimenzija, 10% kvalitete
+  function compressExtreme(imageSrc, callback) {
     if (imageSrc.toLowerCase().includes('.svg') || imageSrc.startsWith('data:image/svg+xml')) {
       callback(imageSrc);
       return;
     }
 
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    // OVDJE IZBRISAN crossOrigin kako bi radilo za lokalne datoteke
     img.onload = function() {
       const canvas = document.createElement('canvas');
-      // Smanji na 20% originalnih dimenzija (bilo je 40%)
-      const width = Math.ceil(img.width * 0.2);
-      const height = Math.ceil(img.height * 0.2);
+      const width = Math.ceil(img.width * 0.1);  // 10% originalne širine
+      const height = Math.ceil(img.height * 0.1); // 10% originalne visine
       canvas.width = width;
       canvas.height = height;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, width, height);
       try {
-        // Kvaliteta smanjena na 0.3 (bilo 0.6)
-        const compressedSrc = canvas.toDataURL('image/jpeg', 0.3);
+        const compressedSrc = canvas.toDataURL('image/jpeg', 0.1); // 10% kvalitete
+        console.log(`Komprimirana slika: ${imageSrc.substring(0, 50)} -> ${width}x${height}`);
         callback(compressedSrc);
       } catch (e) {
+        console.warn('Greška pri kompresiji', e);
         callback(imageSrc);
       }
     };
-    img.onerror = () => callback(imageSrc);
+    img.onerror = (e) => {
+      console.error('Ne mogu učitati sliku:', imageSrc, e);
+      callback(imageSrc);
+    };
     img.src = imageSrc;
   }
 
-  function compressAndStore(imgElement, quality = 0.6) {
+  function compressAndStore(imgElement) {
     if (!imgElement || imgElement.dataset.processed === 'true') return;
     const originalSrc = imgElement.src;
     if (!originalSrc) return;
     imgElement.dataset.fullres = originalSrc;
-    reduceImageResolution(originalSrc, (compressedSrc) => {
+    compressExtreme(originalSrc, (compressedSrc) => {
       if (compressedSrc !== originalSrc) {
         imgElement.src = compressedSrc;
+        console.log('Postavljena komprimirana verzija za', originalSrc);
       }
       imgElement.dataset.processed = 'true';
-    }, quality);
+    });
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    // Hero slike – kvaliteta 0.3 (već je smanjena unutar reduceImageResolution)
-    document.querySelectorAll('.img-card img').forEach((img) => {
-      compressAndStore(img, 0.3);
+    // 1. Hero slike (studenti)
+    const heroImages = document.querySelectorAll('.img-card img');
+    console.log('Pronađeno hero slika:', heroImages.length);
+    heroImages.forEach((img) => {
+      compressAndStore(img);
       const card = img.closest('.img-card');
       if (card) {
         card.style.cursor = 'zoom-in';
@@ -77,27 +84,33 @@
       }
     });
 
-    // Profilne slike – dodatno lošija kvaliteta (0.25)
-    document.querySelectorAll('button[aria-label^="Povećaj"]').forEach((btn) => {
-      const img = btn.querySelector('img');
-      if (!img) return;
-      compressAndStore(img, 0.25);
-      btn.style.cursor = 'zoom-in';
-      btn.addEventListener('click', () => {
-        const fullSrc = img.dataset.fullres || img.src;
-        openLightbox(fullSrc, img.alt);
-      });
+    // 2. Profilne slike (pored audio)
+    const profileImages = document.querySelectorAll('button[aria-label^="Povećaj"] img');
+    console.log('Pronađeno profilnih slika:', profileImages.length);
+    profileImages.forEach((img) => {
+      compressAndStore(img);
+      const btn = img.closest('button');
+      if (btn) {
+        btn.style.cursor = 'zoom-in';
+        btn.addEventListener('click', () => {
+          const fullSrc = img.dataset.fullres || img.src;
+          openLightbox(fullSrc, img.alt);
+        });
+      }
     });
 
-    // Galerijske slike – kvaliteta 0.3
-    document.querySelectorAll('.gallery-btn').forEach((btn) => {
-      const img = btn.querySelector('img');
-      if (!img) return;
-      compressAndStore(img, 0.3);
-      btn.addEventListener('click', () => {
-        const fullSrc = img.dataset.fullres || img.src;
-        openLightbox(fullSrc, img.alt);
-      });
+    // 3. Galerijske slike
+    const galleryImages = document.querySelectorAll('.gallery-btn img');
+    console.log('Pronađeno galerijskih slika:', galleryImages.length);
+    galleryImages.forEach((img) => {
+      compressAndStore(img);
+      const btn = img.closest('.gallery-btn');
+      if (btn) {
+        btn.addEventListener('click', () => {
+          const fullSrc = img.dataset.fullres || img.src;
+          openLightbox(fullSrc, img.alt);
+        });
+      }
     });
   });
 })();
