@@ -20,7 +20,7 @@
     document.body.appendChild(overlay);
   }
 
-  // Kompresija – prilagođeni parametri
+  // Kompresija – srednje jaka (15% dimenzija, 20% kvalitete)
   function compressExtreme(imageSrc, callback) {
     if (imageSrc.toLowerCase().includes('.svg') || imageSrc.startsWith('data:image/svg+xml')) {
       callback(imageSrc);
@@ -30,16 +30,14 @@
     const img = new Image();
     img.onload = function() {
       const canvas = document.createElement('canvas');
-      // PROMIJENI OVDJE: 0.3 = 30% originalne veličine (prije 0.1)
-      const width = Math.ceil(img.width * 0.3);
-      const height = Math.ceil(img.height * 0.3);
+      const width = Math.ceil(img.width * 0.15);  // 15% originalne širine
+      const height = Math.ceil(img.height * 0.15); // 15% originalne visine
       canvas.width = width;
       canvas.height = height;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, width, height);
       try {
-        // PROMIJENI OVDJE: 0.4 = 40% kvalitete (prije 0.1)
-        const compressedSrc = canvas.toDataURL('image/jpeg', 0.4);
+        const compressedSrc = canvas.toDataURL('image/jpeg', 0.2); // 20% kvalitete
         console.log(`Komprimirana slika: ${imageSrc.substring(0, 50)} -> ${width}x${height}`);
         callback(compressedSrc);
       } catch (e) {
