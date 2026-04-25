@@ -1,21 +1,29 @@
 <!DOCTYPE html>
 <html lang="hr">
 <head>
+  <!-- Osnovni metapodaci stranice – charset, viewport i SEO -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Josip Stjepić &amp; Gabrijel Relković — Predstavljanje poslodavcu</title>
   <meta name="author" content="Josip Stjepić &amp; Gabrijel Relković" />
   <meta name="description" content="Studenti FERIT-a Osijek, kolegij Multimedijska tehnika. Životopis, vještine, projekti i kontakt — predstavljamo se potencijalnim poslodavcima." />
+  
+  <!-- Pred-učitavanje slika za brže prikazivanje hero sekcije -->
   <link rel="preload" as="image" href="assets/studentt-josip.jpg" />
   <link rel="preload" as="image" href="assets/studentt-gabriel.jpg" />
+  
+  <!-- Povezivanje s Google Fonts za prilagođene fontove -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" />
+  
+  <!-- Vanjski stilovi i skripta -->
   <link rel="stylesheet" href="styles.css" />
   <script defer src="script.js"></script>
 </head>
 <body>
 <div class="page">
+  <!-- Zaglavlje stranice – logo i navigacija -->
   <header class="site-header">
     <div class="container header-inner">
       <a href="#top" class="logo">J<span class="gold-dot">·</span>G — Portfolio</a>
@@ -36,7 +44,7 @@
   </header>
 
   <main>
-    <!-- Hero sekcija -->
+    <!-- Hero sekcija – uvod s kartama studenata -->
     <section id="top" class="hero">
       <div class="container">
         <p class="section-badge">FERIT Osijek · Multimedijska tehnika · 2025/2026</p>
@@ -67,7 +75,7 @@
 
     <div class="gold-rule"></div>
 
-    <!-- Profil Josipa Stjepića -->
+    <!-- Profil Josipa Stjepića – detaljne informacije o prvom studentu -->
     <section id="josip" class="profile-section">
       <div class="container profile-grid">
         <div class="profile-sidebar">
@@ -161,7 +169,7 @@
       </div>
     </section>
 
-    <!-- Profil Gabrijela Relkovića -->
+    <!-- Profil Gabrijela Relkovića – detaljne informacije o drugom studentu -->
     <section id="gabriel" class="profile-section bg-cream">
       <div class="container profile-grid">
         <div class="profile-sidebar">
@@ -260,7 +268,7 @@
 
     <div class="gold-rule"></div>
 
-    <!-- Galerija slika -->
+    <!-- Galerija slika – vizualna galerija s različitim formatima slika -->
     <section id="galerija" class="gallery-section">
       <div class="container">
         <p class="section-badge">Galerija</p>
@@ -280,7 +288,7 @@
     <section id="video" class="gallery-section">
       <div class="container">
         <p class="section-badge">Video isječak</p>
-        <h2 class="gallery-title">Pogledajte <em class="gold-text">naš rad</em> na djelu.</h2>
+        <h2 class="gallery-title">Pogledajte <em class="gold-text">video</em>o Osijeku</h2>
         <div class="video-wrapper">
           <div style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 56.25%;"><iframe src="https://www.youtube.com/embed/BYwdt0riPkc?rel=0" style="top: 0; left: 0; width: 100%; height: 100%; position: absolute; border: 0;" allowfullscreen scrolling="no" allow="accelerometer *; clipboard-write *; encrypted-media *; gyroscope *; picture-in-picture *; web-share *;" referrerpolicy="strict-origin"></iframe></div>
         </div>
@@ -289,7 +297,7 @@
 
     <div class="gold-rule"></div>
 
-    <!-- Linkovi na radove kolega -->
+    <!-- Linkovi na radove kolega – poveznice na portfolia kolega s drugih smjerova -->
     <section id="kolege" class="colleagues-section">
   <div class="container">
     <p class="section-badge">Kolege</p>
@@ -299,15 +307,15 @@
         <div><div class="colleague-name">Antonio Krivić</div><div class="colleague-role">Kolega, smjer računarstvo</div></div>
         <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
       </a>
-      <a href="https://multimedijskatehnika2026-zadatak.onrender.com/" target="_blank" rel="noopener noreferrer" class="colleague-card">
-        <div><div class="colleague-name">Filip Biberović</div><div class="colleague-role">Kolega, smjer računarstvo</div></div>
+      <a href="https://webbiography.onrender.com/MatijaCik/" target="_blank" rel="noopener noreferrer" class="colleague-card">
+        <div><div class="colleague-name">Matija Cikojević</div><div class="colleague-role">Kolega, smjer računarstvo</div></div>
         <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
       </a>
     </div>
   </div>
 </section>
 
-    <!-- Footer -->
+    <!-- Footer – podnožje s informacijama o fakultetu i autorima -->
     <footer id="fakultet" class="site-footer">
       <div class="container footer-grid">
         <div>
