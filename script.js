@@ -23,7 +23,7 @@
 
   // === Kompresija slike – smanjuje dimenzije i kvalitetu radi bržeg učitavanja ===
   function compressImage(imageSrc, callback) {
-    // Preskoči SVG slike (vektorski format, ne može se komprimirati na ovaj način)
+    // Preskoči SVG slike
     if (imageSrc.toLowerCase().includes('.svg') || imageSrc.startsWith('data:image/svg+xml')) {
       callback(imageSrc);
       return;
@@ -31,14 +31,14 @@
     const img = new Image();
     img.onload = function() {
       const canvas = document.createElement('canvas');
-      const width = Math.ceil(img.width * 0.4);  // 40% originalne širine (kompromis)
+      const width = Math.ceil(img.width * 0.4);  // 40% originalne širine
       const height = Math.ceil(img.height * 0.4); // 40% originalne visine
       canvas.width = width;
       canvas.height = height;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, width, height);
       try {
-        const compressedSrc = canvas.toDataURL('image/jpeg', 0.5); // Kvaliteta 50%
+        const compressedSrc = canvas.toDataURL('image/jpeg', 0.4); // Kvaliteta 40%
         callback(compressedSrc);
       } catch(e) { callback(imageSrc); }
     };
@@ -51,17 +51,16 @@
     if (!imgEl || imgEl.dataset.processed === 'true') return;
     const orig = imgEl.src;
     if (!orig) return;
-    imgEl.dataset.fullres = orig; // original za lightbox
+    imgEl.dataset.fullres = orig;
     compressImage(orig, (compressed) => {
       if (compressed !== orig) imgEl.src = compressed;
       imgEl.dataset.processed = 'true';
     });
   }
 
-  // === Prikaz trajanja audio zapisa (u sekundama) ===
+  // === Prikaz trajanja audio zapisa ===
   function displayAudioDuration() {
     document.querySelectorAll('audio').forEach(audio => {
-      // Provjeri da li već postoji span za trajanje, ako ne – kreiraj ga
       let durationSpan = audio.parentNode.querySelector('.audio-duration');
       if (!durationSpan) {
         durationSpan = document.createElement('span');
@@ -71,7 +70,6 @@
         durationSpan.style.color = 'var(--muted-foreground)';
         audio.parentNode.appendChild(durationSpan);
       }
-      
       const setDuration = () => {
         const seconds = Math.round(audio.duration);
         if (!isNaN(seconds)) {
@@ -80,8 +78,6 @@
           durationSpan.textContent = `⏱️ učitavanje...`;
         }
       };
-      
-      // Ako su metapodaci već učitani (npr. iz predmemorije)
       if (audio.readyState >= 1) {
         setDuration();
       } else {
@@ -90,9 +86,9 @@
     });
   }
 
-  // === Glavna funkcija – izvršava se nakon što se stranica učita ===
+  // === Glavna funkcija – nakon učitavanja stranice ===
   document.addEventListener('DOMContentLoaded', () => {
-    // 1. Hero kartice (slike studenata na početnoj stranici)
+    // Hero kartice
     document.querySelectorAll('.img-card img').forEach(img => {
       processImage(img);
       const card = img.closest('.img-card');
@@ -105,7 +101,7 @@
       }
     });
 
-    // 2. Profilne slike (pored audio zapisa – botun za povećanje)
+    // Profilne slike
     document.querySelectorAll('button[aria-label^="Povećaj"] img').forEach(img => {
       processImage(img);
       const btn = img.closest('button');
@@ -115,7 +111,7 @@
       }
     });
 
-    // 3. Galerijske slike (unutar <figure> elemenata, s klasom .gallery-btn)
+    // Galerijske slike
     document.querySelectorAll('.gallery-btn img').forEach(img => {
       processImage(img);
       const btn = img.closest('.gallery-btn');
@@ -124,7 +120,7 @@
       }
     });
 
-    // 4. Hamburger meni (mobilna navigacija – otvaranje/zatvaranje)
+    // Hamburger meni
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.main-nav');
     if (hamburger && navMenu) {
@@ -133,7 +129,6 @@
         hamburger.setAttribute('aria-expanded', expanded);
         navMenu.classList.toggle('open');
       });
-      // Zatvaranje menija nakon klika na bilo koju poveznicu
       navMenu.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', () => {
           navMenu.classList.remove('open');
@@ -142,10 +137,10 @@
       });
     }
 
-    // 5. Prikaz trajanja audio zapisa
+    // Audio trajanje
     displayAudioDuration();
 
-    // 6. Slike u footeru (slika fakulteta – kompresija za brže učitavanje)
+    // Footer slika
     document.querySelectorAll('.footer-image img').forEach(img => {
       processImage(img);
     });
