@@ -31,14 +31,14 @@
     const img = new Image();
     img.onload = function() {
       const canvas = document.createElement('canvas');
-      const width = Math.ceil(img.width * 0.8);  // 15% originalne širine
-      const height = Math.ceil(img.height * 0.8); // 15% originalne visine
+      const width = Math.ceil(img.width * 0.4);  // 40% originalne širine (kompromis)
+      const height = Math.ceil(img.height * 0.4); // 40% originalne visine
       canvas.width = width;
       canvas.height = height;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, width, height);
       try {
-        const compressedSrc = canvas.toDataURL('image/jpeg', 0.85); // Kvaliteta 20%
+        const compressedSrc = canvas.toDataURL('image/jpeg', 0.5); // Kvaliteta 50%
         callback(compressedSrc);
       } catch(e) { callback(imageSrc); }
     };
@@ -144,5 +144,10 @@
 
     // 5. Prikaz trajanja audio zapisa
     displayAudioDuration();
+
+    // 6. Slike u footeru (slika fakulteta – kompresija za brže učitavanje)
+    document.querySelectorAll('.footer-image img').forEach(img => {
+      processImage(img);
+    });
   });
 })();
